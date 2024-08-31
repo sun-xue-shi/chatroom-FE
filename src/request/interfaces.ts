@@ -1,4 +1,5 @@
 import { request } from ".";
+import { AddFriend } from "../views/friendship/addFriend/types";
 import { RegisterUser } from "../views/register/types";
 import { UserInfo } from "../views/updateInfo/types";
 import { UpdatePassword } from "../views/updatePassword/types";
@@ -60,4 +61,8 @@ export async function friendshipList(name?: string) {
 
 export async function chatroomList(name: string) {
   return request.get(`/chatroom/list?name=${name || ""}`);
+}
+
+export async function friendAdd(data: AddFriend) {
+  return request.post("/friendship/add", data);
 }

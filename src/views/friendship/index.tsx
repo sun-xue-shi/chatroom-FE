@@ -5,9 +5,11 @@ import { useForm } from "antd/es/form/Form";
 import { Button, Form, Input, message } from "antd";
 import "./index.css";
 import { friendshipList } from "../../request/interfaces";
+import { AddFriendModal } from "./addFriend";
 
 export function Friendship() {
   const [friendRes, setFriendRes] = useState<FriendshipSearchResult[]>([]);
+  const [isShowAddFriend, setShowAddFriend] = useState(false);
 
   const columns: ColumnsType<FriendshipSearchResult> = useMemo(
     () => [
@@ -91,6 +93,16 @@ export function Friendship() {
               搜索
             </Button>
           </Form.Item>
+
+          <Form.Item label=" ">
+            <Button
+              type="primary"
+              style={{ background: "green" }}
+              onClick={() => setShowAddFriend(true)}
+            >
+              添加好友
+            </Button>
+          </Form.Item>
         </Form>
       </div>
       <div className="friendship-table">
@@ -100,6 +112,12 @@ export function Friendship() {
           style={{ width: "1000px" }}
         />
       </div>
+      <AddFriendModal
+        isOpen={isShowAddFriend}
+        handleClose={() => {
+          setShowAddFriend(false);
+        }}
+      />
     </div>
   );
 }
