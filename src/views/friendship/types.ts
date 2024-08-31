@@ -4,8 +4,8 @@ export interface SearchFriend {
 
 export interface FriendshipSearchResult {
   id: number;
-  username: string;
+  userName: string;
   nickName: string;
-  headPic: string;
+  avatar: string;
   email: string;
 }

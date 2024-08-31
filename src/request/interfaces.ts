@@ -53,3 +53,11 @@ export async function updateUserInfoCaptcha(email: string) {
 export async function presignedUrl(fileName: string) {
   return request.get(`/minio/presignedUrl?name=${fileName}`);
 }
+
+export async function friendshipList(name?: string) {
+  return request.get(`/user/list?name=${name || ""}`);
+}
+
+export async function chatroomList(name: string) {
+  return request.get(`/chatroom/list?name=${name || ""}`);
+}

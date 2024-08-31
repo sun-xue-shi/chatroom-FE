@@ -62,7 +62,7 @@ export function UpdateInfo() {
         form.setFieldValue("headPic", res.data.avatar);
         form.setFieldValue("nickName", res.data.nickName);
         form.setFieldValue("email", res.data.email);
-        form.setFieldValue("username", res.data.userName);
+        form.setFieldValue("userName", res.data.userName);
       }
     }
     query();
