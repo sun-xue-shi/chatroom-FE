@@ -1,5 +1,6 @@
 import { request } from ".";
 import { RegisterUser } from "../views/register/types";
+import { UserInfo } from "../views/updateInfo/types";
 import { UpdatePassword } from "../views/updatePassword/types";
 
 export async function login(userName: string, password: string) {
@@ -31,4 +32,24 @@ export async function updatePasswordCaptcha(email: string) {
 
 export async function updatePassword(data: UpdatePassword) {
   return await request.post("/user/update_password", data);
+}
+
+export async function getUserInfo() {
+  return await request.get("/user/info");
+}
+
+export async function updateInfo(data: UserInfo) {
+  return await request.post("/user/update", data);
+}
+
+export async function updateUserInfoCaptcha(email: string) {
+  return await request.get("/user/update/captcha", {
+    params: {
+      address: email,
+    },
+  });
+}
+
+export async function presignedUrl(fileName: string) {
+  return request.get(`/minio/presignedUrl?name=${fileName}`);
 }

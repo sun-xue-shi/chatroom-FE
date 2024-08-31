@@ -2,29 +2,34 @@ import { Button, Form, Input, message } from "antd";
 import { useForm } from "antd/es/form/Form";
 import "./index.css";
 import { useNavigate } from "react-router-dom";
+import { UserInfo } from "./types";
 import { layout1 } from "./constants";
-import { type UpdatePassword } from "./types";
 import {
-  updatePassword,
-  updatePasswordCaptcha,
+  getUserInfo,
+  updateInfo,
+  updateUserInfoCaptcha,
 } from "../../request/interfaces";
+import { useEffect } from "react";
+import { AvatarUpload } from "./avatarUpload";
 
-export function UpdatePassword() {
+export function UpdateInfo() {
   const [form] = useForm();
   const navigate = useNavigate();
 
-  const onFinish = async (values: UpdatePassword) => {
-    if (values.password !== values.confirmPassword) {
-      return message.error("两次密码不一致");
-    }
+  const onFinish = async (values: UserInfo) => {
     try {
-      const res = await updatePassword(values);
-
+      const res = await updateInfo(values);
       if (res.status === 201 || res.status === 200) {
-        message.success("密码修改成功");
-        setTimeout(() => {
-          navigate("/login");
-        }, 1500);
+        message.success("用户信息更新成功");
+
+        const userInfo = localStorage.getItem("userInfo");
+        if (userInfo) {
+          const info = JSON.parse(userInfo);
+          info.avatar = values.avatar;
+          info.nickName = values.nickName;
+
+          localStorage.setItem("userInfo", JSON.stringify(info));
+        }
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
@@ -39,7 +44,7 @@ export function UpdatePassword() {
     }
 
     try {
-      const res = await updatePasswordCaptcha(address);
+      const res = await updateUserInfoCaptcha(address);
       if (res.status === 201 || res.status === 200) {
         message.success("发送成功");
       }
@@ -49,9 +54,22 @@ export function UpdatePassword() {
     }
   };
 
+  useEffect(() => {
+    async function query() {
+      const res = await getUserInfo();
+
+      if (res.status === 201 || res.status === 200) {
+        form.setFieldValue("headPic", res.data.avatar);
+        form.setFieldValue("nickName", res.data.nickName);
+        form.setFieldValue("email", res.data.email);
+        form.setFieldValue("username", res.data.userName);
+      }
+    }
+    query();
+  }, []);
+
   return (
-    <div id="updatePassword-container">
-      <h1>聊天室</h1>
+    <div id="updateInfo-container">
       <Form
         form={form}
         {...layout1}
@@ -60,12 +78,21 @@ export function UpdatePassword() {
         autoComplete="off"
       >
         <Form.Item
-          label="用户名"
-          name="userName"
-          rules={[{ required: true, message: "请输入用户名!" }]}
+          label="头像"
+          name="avatar"
+          rules={[{ required: true, message: "请输入头像!" }]}
+        >
+          <AvatarUpload />
+        </Form.Item>
+
+        <Form.Item
+          label="昵称"
+          name="nickName"
+          rules={[{ required: true, message: "请输入昵称!" }]}
         >
           <Input />
         </Form.Item>
+
         <Form.Item
           label="邮箱"
           name="email"
@@ -90,25 +117,9 @@ export function UpdatePassword() {
           </Button>
         </div>
 
-        <Form.Item
-          label="密码"
-          name="password"
-          rules={[{ required: true, message: "请输入密码!" }]}
-        >
-          <Input.Password />
-        </Form.Item>
-
-        <Form.Item
-          label="确认密码"
-          name="confirmPassword"
-          rules={[{ required: true, message: "请输入确认密码!" }]}
-        >
-          <Input.Password />
-        </Form.Item>
-
         <Form.Item {...layout1} label=" ">
           <Button className="btn" type="primary" htmlType="submit">
-            修改
+            确认修改
           </Button>
         </Form.Item>
       </Form>
